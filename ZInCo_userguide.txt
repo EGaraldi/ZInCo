@@ -1,0 +1,144 @@
+---------------------ZInCo user guide-------------------
+guide v0.1
+by Enrico Garaldi, PhD student, Bonn Universitat
+---------------------------------------------------------
+
+
+--- Introduction ---
+ZInCo is a tool for manipulating initial conditions (ICs) suitable for cosmological numerical simulations with the N-body parallel code GADGET-2 (Springel V., 2005, MNRAS, 364, 1105 and Springel V., Yoshida N., White S. D. M., 2001, New Astronomy, 6, 51).
+At the moment, ZInCo can perform three different manipulation of the ICs:
+-dilution: the number of particles in the ICs is uniformly reduced and the particle properties are consequentely updated
+-zoom: a number of regions in a snapshot of a simulation are determined by the user and marked with different dilution values; the code follows the particles in this regions up to the ICs of the simulations and performs a differential dilutions in order to produce regions with different particle densities (i.e. different resolutions)
+-cascade: similar to the zoom procedure, but the number of regions (and sub-regions) can be specified by the user, while their position in set randomly
+
+--- Installation ---
+To install the code, simply go to the ZInCo folder, adjust as you prefer the compilation option in the Makefile (see "Compilation Options" in the following or the Makefile for a description of the available options) and type: make
+To run the code, use:
+		mpirun -np <number_of_procs> <executable_name> <parameter_file>
+
+--- Basic Structure of the code ---
+The core of the code consists in dividing the simulation box in cubic cells and producing the new particles by summing/averaging the properties of the particles inside the same cell. In such a way it is possible, starting from high-resolutions ICs, reduce their resolutions when not needed and keeping it high where the interesting facts happen. Moreover, the possibility to set different levels of resolution allow a smooth transitions between the high- and low- resolution regions. The number of cells produced must be set in input through the parameter CubesPerSide, which will produce CubesPerSide^3 cells. 
+Since GADGET-2 can handle up to 6 particle species, and since each resolution region needs its own particles type, the number of different resolution regions (LevelsNumber) and the number of particle species present in the ICs (SpeciesNumber) must satisfy the following relation:
+									LevelsNumber * SpeciesNumber <= 6
+
+The different resolution regions are ideally spherical regions, determined by the user through a center (common to all the regions) and a radius for each one of them. However, since the dilution procedure is performed processing the simulation box through cubic cells, the final shape is the one of a sphere made up of cubic pieces.
+
+--- Dilution ---
+The dilution is the simplest of the possible operations and consist in dividing the simulation box in CubesPerSide^3 cubic regions and merge the particles inside every single region. Thus, the only parameter which tunes the dilution is CubesPerSide. This procedure is usually adopted in order to run a low-resolution simulation before the zoomed one using a set of ICs which is compatible with the zoomed one.
+
+--- Zoom ---
+The zoom produces a series of quasi-spherical concentric regions each one with a different resolution. In order to do that, for every cubic sub-regions the code check if it cross the sphere centered in the center provided in input and with radius equal to the one set for the corresponding level of resolution. If it is the case, the region is marked. When all the regions have been checked, the code tries to merge N x N x N regions together, where N is the value of Level<n>CubesPerSide. If it is not possible, N is lowered by one and the operation repeated. This is repeated until every region marked for a given level has been merged (extreme case: if N=1, the particles inside the cubic cell are merged together).
+
+--- Cascade ---
+In the cascade, a series of "bubbles" is created. The bubbles are created in a random position BUT ensuring they are completely contained in a bubble of the previous level. In such a way, a smooth transition between low-resolution and high-resolution regions is ensured. The radii of this bubbles and the corresponding resolution are set in input. Note that if the Level0 bubble does not cover the entire simulation box, the particles outside will be discarded.
+
+
+--- Input Parameters ---
+The input to the code are provided through a parameter file. The fields in the parameter file are all mandatory BUT depending on the type of run you want to perform, some could be ignored.
+In the following a description of each parameter is provided:
+
+==============================================================================================================================
+parameter name             |  type [value accepted]  | D | Z | C |  description
+==============================================================================================================================
+/*  OLD, now unused
+Dilution                   |  int [0,1]              | Y | Y | Y |  These three parameters are used to determine what kind of run must be executed.
+Zoom                       |  int [0,1]              | Y | Y | Y |  The code check that exactly one of the is equal to 1 while the others must
+Cascade                    |  int [0,1]              | Y | Y | Y |  be zero.
+*/
+RunType                    |  string                 | Y | Y | Y |  String which contains the type of run (dilution, zoom or cascade)
+------------------------------------------------------------------------------------------------------------------------------
+HighResICsDir              |  string                 | Y | Y | Y |  Directory in which the high-resolution ICs are stored
+HighResICsName             |  string                 | Y | Y | Y |  Name of the file(s) containing the ICs
+HighResICsFilesNumber      |  int                    | Y | Y | Y |  Number of files containing the ICs
+------------------------------------------------------------------------------------------------------------------------------
+OutputDir                  |  string                 | Y | Y | Y |  Directory in which the output are stored
+OutputFilesNumber          |  int                    | Y | Y | Y |  Number of files in the output ICs
+------------------------------------------------------------------------------------------------------------------------------
+CubesPerSide               |  int                    | Y | Y | Y |  Number of cubic cells per side in which the simulations box is divided
+------------------------------------------------------------------------------------------------------------------------------
+LevelsNumber               |  int [1,2,3,4,5,6]      | Y | Y | Y |  Number of resolution levels to produce
+SpeciesNumber              |  int [1,2,3,4,5,6]      | Y | Y | Y |  Number of species in the ICs. They must be stored in the high-resolution ICs provided as 
+                           |                         |   |   |   |   the first SpeciesNumber particles, i.e. from index 0 to index SpeciesNumber-1
+                           |                         |   |   |   |  N.B.: please note that the following relation must hold true: LevelsNumber * SpeciesNumber <= 6
+------------------------------------------------------------------------------------------------------------------------------
+Level0Size                 |  int                    | N | N | Y |  How many bubbles each level will contain. Note that in the case of a zoom, this
+Level1Size                 |  int                    | N | N | Y |  value will be automaticaly set to 1. Moreover, only the first LevelsNumber values
+Level2Size                 |  int                    | N | N | Y |  will be considered, the other will be ignored
+Level3Size                 |  int                    | N | N | Y |  
+Level4Size                 |  int                    | N | N | Y |  
+Level5Size                 |  int                    | N | N | Y |  
+------------------------------------------------------------------------------------------------------------------------------
+Level0BubbleRadius         |  float                  | N | Y | Y |  This set the radius of the bubbles for each level of resolution.
+Level1BubbleRadius         |  float                  | N | Y | Y |  In the case of a zoom, the radius of the first one (Level0) will be adjusted
+Level2BubbleRadius         |  float                  | N | Y | Y |  in order to contain in the ICs all the particle it contains in the snapshot provided.
+Level3BubbleRadius         |  float                  | N | Y | Y |  The other radii are adjusted mantaining constant their ratio to the first one.
+Level4BubbleRadius         |  float                  | N | Y | Y |  Moreover, only the first LevelsNumber values will be considered, the other will be ignored
+Level5BubbleRadius         |  float                  | N | Y | Y |  The radii must decrease from Level0 to Level<LevelsNumber-1>
+------------------------------------------------------------------------------------------------------------------------------
+Level0CubesPerSide         |  int                    | N | Y | Y |  This set the number of cubic cells that should be merged when creating the particles of
+Level1CubesPerSide         |  int                    | N | Y | Y |  the given level of resolution.
+Level2CubesPerSide         |  int                    | N | Y | Y |  Moreover, only the first LevelsNumber values will be considered, the other will be ignored
+Level3CubesPerSide         |  int                    | N | Y | Y |  Use 0 to copy the particles as they are.
+Level4CubesPerSide         |  int                    | N | Y | Y |  Use -1 to ignore the particles.
+Level5CubesPerSide         |  int                    | N | Y | Y |
+------------------------------------------------------------------------------------------------------------------------------
+LowResICsDir               |  string                 | N | Y | N |  Directory in which the low-resolution (i.e. zoom snapshot) ICs are stored
+LowResICsName              |  string                 | N | Y | N |  Name of the file(s) containing the ICs
+LowResICsFilesNumber       |  int                    | N | Y | N |  Number of files containing the ICs
+------------------------------------------------------------------------------------------------------------------------------
+SnapshotDir                |  string                 | N | Y | N |  Directory in which the snapshot is stored
+SnapshotName               |  string                 | N | Y | N |  Name of the file(s) containing the snapshot
+SnapshotFilesNumber        |  int                    | N | Y | N |  Number of files containing the snapshot
+------------------------------------------------------------------------------------------------------------------------------
+x_c                        |  float                  | N | Y | N |  Coordinates of the center of the resolution regions
+y_c                        |  float                  | N | Y | N |  
+z_c                        |  float                  | N | Y | N |  
+------------------------------------------------------------------------------------------------------------------------------
+CascadeRandomSeed          |  int                    | N | N | Y |  Random seed for the bubbles random production (if < 0 the seed is set using the current time)
+CascadeMaxIter             |  int                    | N | N | Y |  Maximum number of iteration done while trying to place a bubble
+=============================================================================================================================
+
+If you want to insert comments in the parameter file, you can do it by starting the comment with %
+
+--- Compilation Options ---
+Following the description of the available compilation options is provided
+
+==============================================================================================================================
+  option                             |  description
+==============================================================================================================================
+-DDEBUG                              |  print informations about variables value during the whole run. It also performs a number of checks
+                                     |  on variables. Useful for debugging.
+-------------------------------------------------------------------------------------------------------------------------------
+-DVDEBUG                             |  Prints (a lot) of debug steps, approximately one for every group of reated operation performed.
+                                     |  Useful for determing the exact position where a problem occurs.
+-------------------------------------------------------------------------------------------------------------------------------
+-DLONGIDS_IN_HIGH                    |  Use long IDs in the high-resolution ICs
+-------------------------------------------------------------------------------------------------------------------------------
+-DLONGIDS_IN_LOW                     |  Use long IDs in the low-resolution ICs / in the snapshot
+-------------------------------------------------------------------------------------------------------------------------------
+-DLONGIDS_OUT                        |  Produce ICs with long IDs
+-------------------------------------------------------------------------------------------------------------------------------
+-DVINFO                              |  Print a huge number of informations in the info.txt file
+                                     |  Be careful, the fill will become BIG!
+-------------------------------------------------------------------------------------------------------------------------------
+-DPRINT_IDS_CORRESPONDENCE           |  Produce a file with the corrspondence between the IDs in the old (high-resolution) ICs
+                                     |  and the new (processed) ICs
+-------------------------------------------------------------------------------------------------------------------------------
+-DADD_INTERNAL_ENERGIES              |  Add a block containing (fictional=null) internal energies.
+-------------------------------------------------------------------------------------------------------------------------------
+-DZOOM_FROM_ICS                      |  In the zoom run, the resolution regions are taken directly from the high-res ICs without adjust them.
+================================================================================================================================
+
+--- Output ---
+The code output consists in:
+-OutputFilesNumber file(s) containing the processed ICs, saved in the OutputDir directory. They hae the same name of the high-resolution
+  ICs but appended with ".dilution<CubesPerSide>", ".zoom" or ".cascade" for the three different procedure available
+-info.txt, also saved in the OutputDir directory, containing informations about the code operations and timing
+-[optional] ID_correspondece.txt, also saved in the OutputDir directory, which contains the correspondence between the initial IDs of the particles
+  and the new ID, i.e. the ID they have in the new ICs produced. See "Compilation Options" to produce it.
+-cascade_info.txt is printed only during cascade run and contains information about the bubbles tree produced.
+-Some informations printed on screen during the run. They are mainly related to the file processed and the subroutine running.
+
+--- Memory usage ---
+Here follow a rough estimation of the maximum memory used by the code:
+	(CubesPerSide^3)*[2*sizeof(int) + 7*sizeof(float) + sizeof(int/long)] + total(npart)*[7*sizeof(float) + sizeof(int/long)]

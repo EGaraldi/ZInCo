@@ -1,0 +1,13 @@
+error code:
+
+1=missing parameters file
+2=error opening info.txt
+3=error opening ICs or SNAPSHOT file
+4=blockheader not equal
+5=error in variables types
+6=error opening IDs correspondence file
+7=error opening zoomed ICs file
+8=called with -np 1
+9=error reading parameters file
+10=error in input values
+11=no particles in output
