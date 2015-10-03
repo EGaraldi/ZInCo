@@ -50,9 +50,11 @@ RunType                    |  string                 | Y | Y | Y |  String which
 HighResICsDir              |  string                 | Y | Y | Y |  Directory in which the high-resolution ICs are stored
 HighResICsName             |  string                 | Y | Y | Y |  Name of the file(s) containing the ICs
 HighResICsFilesNumber      |  int                    | Y | Y | Y |  Number of files containing the ICs
+HighResFileType            |  int                    | Y | Y | Y |  File type (gadget 1 or 2)
 ------------------------------------------------------------------------------------------------------------------------------
 OutputDir                  |  string                 | Y | Y | Y |  Directory in which the output are stored
 OutputFilesNumber          |  int                    | Y | Y | Y |  Number of files in the output ICs
+OutputFileType             |  int                    | Y | Y | Y |  File type (gadget 1 or 2)
 ------------------------------------------------------------------------------------------------------------------------------
 CubesPerSide               |  int                    | Y | Y | Y |  Number of cubic cells per side in which the simulations box is divided
 ------------------------------------------------------------------------------------------------------------------------------
@@ -85,10 +87,12 @@ Level5CubesPerSide         |  int                    | N | Y | Y |
 LowResICsDir               |  string                 | N | Y | N |  Directory in which the low-resolution (i.e. zoom snapshot) ICs are stored
 LowResICsName              |  string                 | N | Y | N |  Name of the file(s) containing the ICs
 LowResICsFilesNumber       |  int                    | N | Y | N |  Number of files containing the ICs
+LowResFileType             |  int                    | N | Y | N |  File type (gadget 1 or 2)
 ------------------------------------------------------------------------------------------------------------------------------
 SnapshotDir                |  string                 | N | Y | N |  Directory in which the snapshot is stored
 SnapshotName               |  string                 | N | Y | N |  Name of the file(s) containing the snapshot
 SnapshotFilesNumber        |  int                    | N | Y | N |  Number of files containing the snapshot
+SnapshotFileType           |  int                    | N | Y | N |  File type (gadget 1 or 2)
 ------------------------------------------------------------------------------------------------------------------------------
 x_c                        |  float                  | N | Y | N |  Coordinates of the center of the resolution regions
 y_c                        |  float                  | N | Y | N |  

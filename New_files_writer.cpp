@@ -43,7 +43,7 @@ void New_files_writer(){
 
 	//read the existing header and then modify the variables changed by ZInCo
 	bool things_to_read[5] = { true, false, false, false, false }; /* header, pos, vel, id, mass */
-	Read_ICs_File(fname, wh, particles_in, idH, false, things_to_read);
+	Read_ICs_File(fname, Hin_ftype, wh, particles_in, idH, false, things_to_read);
 
 	#ifdef DEBUG
 	display_info("npart:  %i  %i  %i  %i  %i  %i\n",wh.npart[0],wh.npart[1],wh.npart[2], wh.npart[3],wh.npart[4],wh.npart[5]);
@@ -225,7 +225,7 @@ void New_files_writer(){
 			//Call the function to actually write data
 			print_info("New_files_writer: writing on file %s\n",fname);
 			bool things_to_write[5] = { true, true, true, true, true }; /* header, pos, vel, id, mass */
-			Write_ICs_or_Snap_File(fname, wh, new_particles, things_to_write);
+			Write_ICs_or_Snap_File(fname, out_ftype, wh, new_particles, things_to_write);
 
 			//Remove the particles written
 			if(out_fnr == 1) new_particles.clear();

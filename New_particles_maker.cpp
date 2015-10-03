@@ -89,7 +89,7 @@ void New_particles_maker(){
 
 		//read "old" particles
 		bool things_to_read[5] = { true, true, true, true, true }; /* header, pos, vel, id, mass */
-		Read_ICs_File(fname, header1, particles_in, idH, true, things_to_read);
+		Read_ICs_File(fname, Hin_ftype, header1, particles_in, idH, true, things_to_read);
 		#ifdef DEBUG
 		printf("Ngas %i Nhalo %i Hdisk %i Nbulge %i Nstars %i Nbndry %i\n",Ngas, Nhalo, Ndisk, Nbulge, Nstars, Nbndry);
 		#endif

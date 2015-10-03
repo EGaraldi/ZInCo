@@ -191,6 +191,25 @@ void check_variables(){
 		error_flag = 10;
 	}
 	error_flag_check();
+
+	//check file type is supported
+	if (Lin_ftype < 0 || Lin_ftype > 2){
+		display_info("LowResICsFileType MUST be 1 or 2");
+		error_flag = 10;
+	}
+	if (Hin_ftype < 0 || Hin_ftype > 2){
+		display_info("HighResICsFileType MUST be 1 or 2");
+		error_flag = 10;
+	}
+	if (Sin_ftype < 0 || Sin_ftype > 2){
+		display_info("SnapFileType MUST be 1 or 2");
+		error_flag = 10;
+	}
+	if (out_ftype < 0 || out_ftype > 2){
+		display_info("OutputFileType MUST be 1 or 2");
+		error_flag = 10;
+	}
+	error_flag_check();
 }
 
 

@@ -17,7 +17,15 @@ Bonn, Germany)
 #include"global_variables.h"
 #include"functions_declaration.h"
 
-void Write_ICs_or_Snap_File(char fname[], io_header& header, vector< vector<particle_data> >& particles, bool things_to_write[]){
+void WriteBlockLabel(int blocksize){
+	int blockheader = 4*sizeof(char) + sizeof(int);
+	my_fwrite(&blockheader, sizeof(int), 1, file);
+	my_fwrite(&label, sizeof(char), 4, file);
+	my_fwrite(&blocksize, sizeof(int), 1, file);
+	my_fwrite(&blockheader, sizeof(int), 1, file);
+}
+
+void Write_ICs_or_Snap_File(char fname[], int ftype, io_header& header, vector< vector<particle_data> >& particles, bool things_to_write[]){
 	//things_to_write is an array of bbol corresponding to: header, pos, vel, id, mass. The only optional is the last, all the other 
 	//must be true to have a working ICs file. Nevertheless, it is used this way to allow an easy extension to SPH variables and
 	//to allow to produce non-working ICs file, whatever the reason.
@@ -37,6 +45,7 @@ void Write_ICs_or_Snap_File(char fname[], io_header& header, vector< vector<part
 	//header
 	if (things_to_write[0]){
 		dim = 256;
+		if (ftype == 2) WriteBlockLabel(dim + 2*sizeof(int));
 		my_fwrite(&dim, sizeof(int), 1, file);
 		my_fwrite(&header, sizeof(io_header), 1, file);
 		my_fwrite(&dim, sizeof(int), 1, file);
@@ -63,7 +72,8 @@ void Write_ICs_or_Snap_File(char fname[], io_header& header, vector< vector<part
 		}
 		#endif
 
-		dim=tot_npart*sizeof(float)*3;
+		dim = tot_npart*sizeof(float)*3;
+		if (ftype == 2) WriteBlockLabel(dim + 2*sizeof(int));
 		my_fwrite(&dim, sizeof(int), 1, file);
 		//write the last particles in the array in order to make the erase of the written element faster (no need to shift the following elements
 		//to the positions of the cancelled ones)
@@ -77,7 +87,8 @@ void Write_ICs_or_Snap_File(char fname[], io_header& header, vector< vector<part
 
 	//velocities
 	if(things_to_write[2]){
-		dim=tot_npart*sizeof(float)*3;
+		dim = tot_npart*sizeof(float)*3;
+		if (ftype == 2) WriteBlockLabel(dim + 2*sizeof(int));
 		my_fwrite(&dim, sizeof(int), 1, file);
 		for(i=0;i<6;i++) for(j=1;j<=header.npart[i];j++) my_fwrite(&particles[i][particles[i].size()-j].vel[0], sizeof(float), 3, file);
 		my_fwrite(&dim, sizeof(int), 1, file);
@@ -89,7 +100,8 @@ void Write_ICs_or_Snap_File(char fname[], io_header& header, vector< vector<part
 
 	//IDs
 	if(things_to_write[3]){
-		dim=tot_npart*sizeof(LOIout);
+		dim = tot_npart*sizeof(LOIout);
+		if (ftype == 2) WriteBlockLabel(dim + 2*sizeof(int));
 		my_fwrite(&dim, sizeof(int), 1, file);
 		//the IDs are sequentially produced
 		for(i=0;i<6;i++) for(j=1;j<=header.npart[i];j++){ my_fwrite(&lastID, sizeof(LOIout), 1, file); lastID++; }
@@ -102,7 +114,8 @@ void Write_ICs_or_Snap_File(char fname[], io_header& header, vector< vector<part
 
 	//masses
 	if(things_to_write[4]){
-		dim=tot_npart*sizeof(float);
+		dim = tot_npart*sizeof(float);
+		if (ftype == 2) WriteBlockLabel(dim + 2*sizeof(int));
 		my_fwrite(&dim, sizeof(int), 1, file);
 		for(i=0;i<6;i++) for(j=1;j<=header.npart[i];j++) my_fwrite(&particles[i][particles[i].size()-j].mass, sizeof(float), 1, file);
 		my_fwrite(&dim, sizeof(int), 1, file);
@@ -112,10 +125,11 @@ void Write_ICs_or_Snap_File(char fname[], io_header& header, vector< vector<part
 	#ifdef ADD_INTERNAL_ENERGIES
 	if(header.npart[0] > 0){
 		float ie=0.0f;
-		dim=header.npart[0]*sizeof(float);
-                my_fwrite(&dim, sizeof(int), 1, file);
-                for(j=0;j<header.npart[0];j++) my_fwrite(&ie, sizeof(float), 1, file);
-                my_fwrite(&dim, sizeof(int), 1, file);
+		dim = header.npart[0]*sizeof(float);
+		if (ftype == 2) WriteBlockLabel(dim + 2*sizeof(int));
+        my_fwrite(&dim, sizeof(int), 1, file);
+        for(j=0;j<header.npart[0];j++) my_fwrite(&ie, sizeof(float), 1, file);
+        my_fwrite(&dim, sizeof(int), 1, file);
 	}
 	#endif
 

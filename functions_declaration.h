@@ -48,8 +48,8 @@ bool spheres_intersect(Sphere, Sphere);
 float DegreesToRadiant(int);
 
 //Read_ICs_or_Snap_File.cpp
-void Read_ICs_File(char[], io_header&, vector<particle_data>&, vector<LOIinHigh>&, bool, bool[]);
-void Read_Snap_File(char[], io_header&, vector<particle_data>&, vector<LOIinLow>&, bool, bool[]);
+void Read_ICs_File(char[], int, io_header&, vector<particle_data>&, vector<LOIinHigh>&, bool, bool[]);
+void Read_Snap_File(char[], int, io_header&, vector<particle_data>&, vector<LOIinLow>&, bool, bool[]);
 
 //Read_parameter_file.cpp
 void Read_parameter_file(char *);
@@ -58,4 +58,4 @@ void Read_parameter_file(char *);
 void Slicer();
 
 //Write_ICs_or_Snap_File.cpp
-void Write_ICs_or_Snap_File(char[], io_header&, vector< vector<particle_data> >&, bool[]);
+void Write_ICs_or_Snap_File(char[], int, io_header&, vector< vector<particle_data> >&, bool[]);
