@@ -1,0 +1,76 @@
+%First of all, tell me the type of process you want me to do setting to 1 the related variable and setting to 0 all the others
+RunType			dilution
+
+%Now tell me where to find the high-resolution ICs, their name and the number of file they are made of
+HighResICsDir		../ICs
+HighResICsName		TestICs_Np128_Nf1
+HighResICsFilesNumber	1
+HighResICsFilesType	1
+
+%   where I should save the output
+OutputDir		../output
+OutputFilesNumber	1
+OutputFilesType		1
+
+%   the number of cubic sections in which the simulation box should be divided into
+CubesPerSide		32
+
+%   and the number of resolution levels you want (if you perform a dilution, LevelsNumber will be set to 1) and the number 
+%    of species you are processing, which must be stored in the first SpeciesNumber particle types.
+%    Remember that the following relation must hold true: LevelsNumber*SpeciesNumber <= 6
+LevelsNumber		3
+SpeciesNumber		2
+
+%(for dilution you can stop here)
+
+%Now, for each resolution level you must specify its size, i.e. how many bubbles each level will contain. Note that only the 
+% first LevelsNumber values will be considered (ignored for zoom)
+Level0Size		1
+Level1Size		3
+Level2Size		3
+Level3Size		3
+Level4Size		3
+Level5Size		3
+
+%At the same way now I need the radius of the bubbles of each level. Thay must decrease from level 0 to level 5
+% (in the ZOOM procedure, the radii will be adjust mantaining their ratio to the last one)
+% NOTE that the particles which do not belong to any level will be ignored
+Level0BubbleRadius	200000
+Level1BubbleRadius	3000
+Level2BubbleRadius	1000
+Level3BubbleRadius	100
+Level4BubbleRadius	30
+Level5BubbleRadius	10
+
+%and also the number of cubic sections I should merge for each resolution level (use 0 to identify where I should copy the particles,
+% use -1 where I should ignore the particles).
+Level0CubesPerSide	2
+Level1CubesPerSide	1
+Level2CubesPerSide	0
+Level3CubesPerSide	2
+Level4CubesPerSide	1
+Level5CubesPerSide	0
+
+%If you are performing a ZOOM, please tell me where to find the diluted ICs, their name and the number of file they are made of
+
+LowResICsDir		/gpfs/scratch/userexternal/egaraldi/SIM/Run_2048_D256/ICs
+LowResICsName		EXP000_2048.dilution256
+LowResICsFilesNumber	1
+LowResICsFilesType	1
+
+%    where to find the snapshot, its name and the number of file it is made of
+SnapshotDir		/gpfs/scratch/userexternal/egaraldi/SIM/Run_2048_D256/output/coupled/
+SnapshotName		EXP018_2048_D256_snap_035
+SnapshotFilesNumber	1
+SnapshotFilesType	1
+
+%    the x, y, z coordinates of the center of the (spherical) region of interest in the snapshot						
+x_c			41926.7 %45292.9
+y_c			28574.8 %6868.26
+z_c			44577.4 %47613.2
+
+%Finally, you should set a seed for the random production of the cascade (use -1 if you want me to use the current time)
+CascadeRandomSeed	543248
+
+%and a maximum number of iteration for each bubble in the loop which places the bubbles
+CascadeMaxIter		100

@@ -1,0 +1,31 @@
+random seed used for the cascade: 452236
+level 0 :
+  (no super-bubble since this is the first level)
+    bubble n. 0 :
+      center: 18.853899 19.259895 76.725731 :
+      radius: 200.000000 :
+
+level 1 :
+  super-bubble n. 0 :
+    bubble n. 0 :
+      center: 67.071533 59.719284 78.923767 :
+      radius: 20.000000 :
+    bubble n. 1 :
+      center: 20.318832 23.768499 77.057228 :
+      radius: 20.000000 :
+
+level 2 :
+  super-bubble n. 0 :
+    bubble n. 0 :
+      center: 69.916946 64.454849 79.310089 :
+      radius: 5.000000 :
+    bubble n. 1 :
+      center: 68.037514 58.339722 90.907005 :
+      radius: 5.000000 :
+  super-bubble n. 1 :
+    bubble n. 0 :
+      center: 27.019995 31.477303 83.439812 :
+      radius: 5.000000 :
+    bubble n. 1 :
+      center: 25.600910 21.077145 87.752014 :
+      radius: 5.000000 :

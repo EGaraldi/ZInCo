@@ -18,14 +18,14 @@ Bonn, Germany)
 #include"functions_declaration.h"
 
 
-bool ReadBlockLabel(){
+bool ReadBlockLabel(FILE* file){
 	int blockheader1, blockheader2, blocksize;
 	char label[4];
 	my_fread(&blockheader1, sizeof(int), 1, file);
 	my_fread(&label, sizeof(char), 4, file);
 	my_fread(&blocksize, sizeof(int), 1, file);
-	my_fread(&blockheader1, sizeof(int), 1, file);
-	return blockheader1 == blockheader2
+	my_fread(&blockheader2, sizeof(int), 1, file);
+	return blockheader1 == blockheader2;
 }
 
 void Read_ICs_File(char fname[], int ftype,  io_header& header, vector<particle_data>& particles, vector<LOIinHigh>& id, bool share_data, bool things_to_read[]){
@@ -62,7 +62,7 @@ void Read_ICs_File(char fname[], int ftype,  io_header& header, vector<particle_
 
 		//read the header
 		if (ftype == 2)
-			if (!ReadBlockLabel()){
+			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <header> label.\n");
 				error_flag = 4;
 				error_flag_check();
@@ -96,7 +96,7 @@ void Read_ICs_File(char fname[], int ftype,  io_header& header, vector<particle_
 		#endif
 
 		if (ftype == 2)
-			if (!ReadBlockLabel()){
+			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <position> label.\n");
 				error_flag = 4;
 				error_flag_check();
@@ -136,7 +136,7 @@ void Read_ICs_File(char fname[], int ftype,  io_header& header, vector<particle_
 		#endif
 
 		if (ftype == 2)
-			if (!ReadBlockLabel()){
+			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <velocities> label.\n");
 				error_flag = 4;
 				error_flag_check();
@@ -170,7 +170,7 @@ void Read_ICs_File(char fname[], int ftype,  io_header& header, vector<particle_
 		id.resize(N);
 
 		if (ftype == 2)
-			if (!ReadBlockLabel()){
+			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <ids> label.\n");
 				error_flag = 4;
 				error_flag_check();
@@ -216,7 +216,7 @@ void Read_ICs_File(char fname[], int ftype,  io_header& header, vector<particle_
 
 		if (Nwithmass > 0){
 			if (ftype == 2)
-				if (!ReadBlockLabel()){
+				if (!ReadBlockLabel(file)){
 					printf("fatal error: blockheaders not equal! Stopped at: <masses> label.\n");
 					error_flag = 4;
 					error_flag_check();
@@ -405,7 +405,7 @@ void Read_Snap_File(char fname[], int ftype, io_header& header, vector<particle_
 		#endif
 
 		if (ftype == 2)
-			if (!ReadBlockLabel()){
+			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <header> label.\n");
 				error_flag = 4;
 				error_flag_check();
@@ -436,7 +436,7 @@ void Read_Snap_File(char fname[], int ftype, io_header& header, vector<particle_
 		#endif
 
 		if (ftype == 2)
-			if (!ReadBlockLabel()){
+			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <positions> label.\n");
 				error_flag = 4;
 				error_flag_check();
@@ -484,7 +484,7 @@ void Read_Snap_File(char fname[], int ftype, io_header& header, vector<particle_
 		}
 
 		if (ftype == 2)
-			if (!ReadBlockLabel()){
+			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <velocities> label.\n");
 				error_flag = 4;
 				error_flag_check();
@@ -505,7 +505,7 @@ void Read_Snap_File(char fname[], int ftype, io_header& header, vector<particle_
 		id.resize(N);
 
 		if (ftype == 2)
-			if (!ReadBlockLabel()){
+			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <ids> label.\n");
 				error_flag = 4;
 				error_flag_check();
@@ -583,7 +583,7 @@ void Read_Snap_File(char fname[], int ftype, io_header& header, vector<particle_
 
 		if (Nwithmass > 0){
 			if (ftype == 2)
-				if (!ReadBlockLabel()){
+				if (!ReadBlockLabel(file)){
 					printf("fatal error: blockheaders not equal! Stopped at: <masses> label.\n");
 					error_flag = 4;
 					error_flag_check();
