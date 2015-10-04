@@ -8,10 +8,12 @@ RunType			zoom
 HighResICsDir		/gpfs/scratch/userexternal/egaraldi/SIM/Run_2048/ICs
 HighResICsName		EXP000_2048
 HighResICsFilesNumber	256
+HighResICsFileType      1
 
 %   where I should save the output
 OutputDir		/gpfs/scratch/userexternal/egaraldi/SIM/Run_2048_Z110/ICs
 OutputFilesNumber	1
+OutputFileType      1
 
 %   the number of cubic sections in which the simulation box should be divided into
 CubesPerSide		512
@@ -57,11 +59,13 @@ Level5CubesPerSide	0
 LowResICsDir		/gpfs/scratch/userexternal/egaraldi/SIM/Run_2048_D256/ICs
 LowResICsName		EXP000_2048.dilution256
 LowResICsFilesNumber	1
+LowResICsFileType      1
 
 %    where to find the snapshot, its name and the number of file it is made of
 SnapshotDir		/gpfs/scratch/userexternal/egaraldi/SIM/Run_2048_D256/output/coupled/
 SnapshotName		EXP018_2048_D256_snap_035
 SnapshotFilesNumber	1
+SnapshotFileType      1
 
 %    the x, y, z coordinates of the center of the (spherical) region of interest in the snapshot						
 x_c			41926.7 %45292.9

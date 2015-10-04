@@ -76,6 +76,10 @@ extern int Lin_fnr;
 extern int Hin_fnr;
 extern int Sin_fnr;
 extern int out_fnr;
+extern int Lin_ftype;
+extern int Hin_ftype;
+extern int Sin_ftype;
+extern int out_ftype;
 
 //geometric variables
 extern int cubes_per_side;

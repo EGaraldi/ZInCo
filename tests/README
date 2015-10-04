@@ -1,0 +1,5 @@
+Before running tests, please unzip the ICs:
+
+cd ./ICs
+gunzip *.gz
+cd ..

@@ -18,7 +18,17 @@ Bonn, Germany)
 #include"functions_declaration.h"
 
 
-void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& particles, vector<LOIinHigh>& id, bool share_data, bool things_to_read[]){
+bool ReadBlockLabel(FILE* file){
+	int blockheader1, blockheader2, blocksize;
+	char label[4];
+	my_fread(&blockheader1, sizeof(int), 1, file);
+	my_fread(&label, sizeof(char), 4, file);
+	my_fread(&blocksize, sizeof(int), 1, file);
+	my_fread(&blockheader2, sizeof(int), 1, file);
+	return blockheader1 == blockheader2;
+}
+
+void Read_ICs_File(char fname[], int ftype,  io_header& header, vector<particle_data>& particles, vector<LOIinHigh>& id, bool share_data, bool things_to_read[]){
 
 /*  share_data = true if data must be sent to other process
     things_to_read[i] = true if the field must be read
@@ -51,6 +61,12 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 		#endif
 
 		//read the header
+		if (ftype == 2)
+			if (!ReadBlockLabel(file)){
+				printf("fatal error: blockheaders not equal! Stopped at: <header> label.\n");
+				error_flag = 4;
+				error_flag_check();
+			}
 		my_fread(&blockheader1, sizeof(int), 1, file);
 		my_fread(&header, sizeof(io_header), 1, file);
 		my_fread(&blockheader2, sizeof(int), 1, file);
@@ -79,7 +95,14 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 		printf("N: %i   particles.size: %zu\n",N,particles.size());
 		#endif
 
+		if (ftype == 2)
+			if (!ReadBlockLabel(file)){
+				printf("fatal error: blockheaders not equal! Stopped at: <position> label.\n");
+				error_flag = 4;
+				error_flag_check();
+			}
 		my_fread(&blockheader1, sizeof(int), 1, file);
+
 		//in the zoom run, we shift the positions in order to have the center of the zoom regions at the centre of the box
 		if (things_to_read[1]){
 			for(k=0;k<N;k++){
@@ -112,6 +135,12 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 		printf("proc %i   debug RIoSF.4\n",my_rank);
 		#endif
 
+		if (ftype == 2)
+			if (!ReadBlockLabel(file)){
+				printf("fatal error: blockheaders not equal! Stopped at: <velocities> label.\n");
+				error_flag = 4;
+				error_flag_check();
+			}
 		my_fread(&blockheader1, sizeof(int), 1, file);
 
 		if(things_to_read[2])
@@ -140,6 +169,12 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 
 		id.resize(N);
 
+		if (ftype == 2)
+			if (!ReadBlockLabel(file)){
+				printf("fatal error: blockheaders not equal! Stopped at: <ids> label.\n");
+				error_flag = 4;
+				error_flag_check();
+			}
 		my_fread(&blockheader1, sizeof(int), 1, file);
 
 		if(things_to_read[3])
@@ -175,11 +210,19 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 
 		//Determine the number of masses to be read in order to determine if the block (=> blockeheader) is present
 		Nwithmass= 0;
-	    	for(k=0;k<6;k++){
-        		if((header.npart[k] > 0) && (header.massarr[k] == 0.0f)) Nwithmass += header.npart[k];
-        	}
+	    for(k=0;k<6;k++){
+        	if((header.npart[k] > 0) && (header.massarr[k] == 0.0f)) Nwithmass += header.npart[k];
+        }
 
-		if (Nwithmass > 0) my_fread(&blockheader1, sizeof(int), 1, file);
+		if (Nwithmass > 0){
+			if (ftype == 2)
+				if (!ReadBlockLabel(file)){
+					printf("fatal error: blockheaders not equal! Stopped at: <masses> label.\n");
+					error_flag = 4;
+					error_flag_check();
+				}
+			my_fread(&blockheader1, sizeof(int), 1, file);
+		}
 
 		if(things_to_read[4]){
 			//For each species present, if the corresponding massarr is zero the corresponding masses are read, otherwise their mass is set to the one in massarr
@@ -238,12 +281,14 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 		#ifdef VDEBUG
 		printf("proc %i   debug RIoSF.2\n",my_rank);
 		#endif
+		if (ftype == 2)	error_flag_check();
 		error_flag_check();
 
 		if(things_to_read[1]){
 			#ifdef VDEBUG
 			printf("proc %i   debug RIoSF.3\n",my_rank);
 			#endif
+			if (ftype == 2)	error_flag_check();
 			error_flag_check();
 		}
 
@@ -251,6 +296,7 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 			#ifdef VDEBUG
 			printf("proc %i   debug RIoSF.4\n",my_rank);
 			#endif
+			if (ftype == 2)	error_flag_check();
 			error_flag_check();
 		}
 
@@ -258,6 +304,7 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 			#ifdef VDEBUG
 			printf("proc %i   debug RIoSF.5\n",my_rank);
 			#endif
+			if (ftype == 2)	error_flag_check();
 			error_flag_check();
 		}
 
@@ -265,6 +312,7 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 			#ifdef VDEBUG
 			printf("proc %i   debug RIoSF.6\n",my_rank);
 			#endif
+			if (ftype == 2)	error_flag_check();
 			error_flag_check();
 		}
 
@@ -328,7 +376,7 @@ void Read_ICs_File(char fname[], io_header& header, vector<particle_data>& parti
 }
 
 //same as above but for snapshot file
-void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& particles, vector<LOIinLow>& id, bool share_data, bool things_to_read[]){
+void Read_Snap_File(char fname[], int ftype, io_header& header, vector<particle_data>& particles, vector<LOIinLow>& id, bool share_data, bool things_to_read[]){
 
 /*  share_data = true if data must be sent to other process
     things_to_read[i] = true if the field must be read
@@ -356,6 +404,12 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 		printf("proc %i   debug RIoSF.2\n",my_rank);
 		#endif
 
+		if (ftype == 2)
+			if (!ReadBlockLabel(file)){
+				printf("fatal error: blockheaders not equal! Stopped at: <header> label.\n");
+				error_flag = 4;
+				error_flag_check();
+			}
 		my_fread(&blockheader1, sizeof(int), 1, file);
 		my_fread(&header, sizeof(io_header), 1, file);
 		my_fread(&blockheader2, sizeof(int), 1, file);
@@ -381,6 +435,12 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 		printf("N: %i   particles.size: %zu\n",N,particles.size());
 		#endif
 
+		if (ftype == 2)
+			if (!ReadBlockLabel(file)){
+				printf("fatal error: blockheaders not equal! Stopped at: <positions> label.\n");
+				error_flag = 4;
+				error_flag_check();
+			}
 		my_fread(&blockheader1, sizeof(int), 1, file);
 
 		if (things_to_read[1]){
@@ -423,6 +483,12 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 			my_fread(&trash, sizeof(float), 3 * N, file);
 		}
 
+		if (ftype == 2)
+			if (!ReadBlockLabel(file)){
+				printf("fatal error: blockheaders not equal! Stopped at: <velocities> label.\n");
+				error_flag = 4;
+				error_flag_check();
+			}
 		my_fread(&blockheader2, sizeof(int), 1, file);
 		if(blockheader1 != blockheader2){
 			display_info("fatal error: blockheaders not equal! Stopped at: <velocities> block.\n");
@@ -438,6 +504,12 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 
 		id.resize(N);
 
+		if (ftype == 2)
+			if (!ReadBlockLabel(file)){
+				printf("fatal error: blockheaders not equal! Stopped at: <ids> label.\n");
+				error_flag = 4;
+				error_flag_check();
+			}
 		my_fread(&blockheader1, sizeof(int), 1, file);
 
 		if (things_to_read[3])
@@ -509,7 +581,15 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 		}
 
 
-		if (Nwithmass > 0) my_fread(&blockheader2, sizeof(int), 1, file);
+		if (Nwithmass > 0){
+			if (ftype == 2)
+				if (!ReadBlockLabel(file)){
+					printf("fatal error: blockheaders not equal! Stopped at: <masses> label.\n");
+					error_flag = 4;
+					error_flag_check();
+				}
+			my_fread(&blockheader1, sizeof(int), 1, file);
+		}
 
 		if (blockheader1 != blockheader2){
 			display_info("fatal error: blockheaders not equal! Stopped at: <masses> block.\n");
@@ -535,12 +615,14 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 		#ifdef VDEBUG
 		printf("proc %i   debug RIoSF.2\n",my_rank);
 		#endif
+		if (ftype == 2)	error_flag_check();
 		error_flag_check();
 
 		if(things_to_read[1]){
 			#ifdef VDEBUG
 			printf("proc %i   debug RIoSF.3\n",my_rank);
 			#endif
+			if (ftype == 2)	error_flag_check();
 			error_flag_check();
 		}
 
@@ -548,6 +630,7 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 			#ifdef VDEBUG
 			printf("proc %i   debug RIoSF.4\n",my_rank);
 			#endif
+			if (ftype == 2)	error_flag_check();
 			error_flag_check();
 		}
 
@@ -555,6 +638,7 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 			#ifdef VDEBUG
 			printf("proc %i   debug RIoSF.5\n",my_rank);
 			#endif
+			if (ftype == 2)	error_flag_check();
 			error_flag_check();
 		}
 
@@ -562,6 +646,7 @@ void Read_Snap_File(char fname[], io_header& header, vector<particle_data>& part
 			#ifdef VDEBUG
 			printf("proc %i   debug RIoSF.6\n",my_rank);
 			#endif
+			if (ftype == 2)	error_flag_check();
 			error_flag_check();
 		}
 

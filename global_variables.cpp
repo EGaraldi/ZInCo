@@ -27,6 +27,10 @@ int Lin_fnr;
 int Hin_fnr;
 int Sin_fnr;
 int out_fnr;
+int Lin_ftype;
+int Hin_ftype;
+int Sin_ftype;
+int out_ftype;
 
 //geometric variables
 int cubes_per_side;

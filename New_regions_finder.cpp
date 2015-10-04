@@ -56,7 +56,7 @@ void New_regions_finder(){
 
 			//actually read the file
 			bool things_to_read[5] = { true, true, true, true, false }; /* header, pos, vel, id, mass */
-			Read_Snap_File(fname, header1, particles_in, idL, false, things_to_read);
+			Read_Snap_File(fname, Sin_ftype, header1, particles_in, idL, false, things_to_read);
 			N = Ngas + Nhalo + Ndisk + Nbulge + Nstars + Nbndry; //total number of particles
 
 			#ifdef VDEBUG
@@ -103,7 +103,7 @@ void New_regions_finder(){
 			
 			//actually read file
 			bool things_to_read[5] = { true, true, true, true, false }; /* header, pos, vel, id, mass */
-			Read_Snap_File(fname, header1, particles_in, idL, false, things_to_read);
+			Read_Snap_File(fname, Lin_ftype, header1, particles_in, idL, false, things_to_read);
 			N = Ngas + Nhalo + Ndisk + Nbulge + Nstars + Nbndry;
 
 			#ifdef VDEBUG

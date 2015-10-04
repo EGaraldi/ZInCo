@@ -85,12 +85,20 @@ void Read_parameter_file(char *ParameterFile){
 		addr[nt] = &Hin_fnr;
 		id[nt++] = INT;
 
+		strcpy(tag[nt], "HighResICsFilesType");
+		addr[nt] = &Hin_ftype;
+		id[nt++] = INT;
+
 		strcpy(tag[nt], "OutputDir");
 		addr[nt] = &output_dir;
 		id[nt++] = STRING;
 
 		strcpy(tag[nt], "OutputFilesNumber");
 		addr[nt] = &out_fnr;
+		id[nt++] = INT;
+
+		strcpy(tag[nt], "OutputFilesType");
+		addr[nt] = &out_ftype;
 		id[nt++] = INT;
 
 		strcpy(tag[nt], "CubesPerSide");
@@ -189,6 +197,10 @@ void Read_parameter_file(char *ParameterFile){
 		addr[nt] = &Lin_fnr;
 		id[nt++] = INT;
 
+		strcpy(tag[nt], "LowResICsFilesType");
+		addr[nt] = &Lin_ftype;
+		id[nt++] = INT;
+
 		strcpy(tag[nt], "SnapshotDir");
 		addr[nt] = &snap_dir;
 		id[nt++] = STRING;
@@ -199,6 +211,10 @@ void Read_parameter_file(char *ParameterFile){
 
 		strcpy(tag[nt], "SnapshotFilesNumber");
 		addr[nt] = &Sin_fnr;
+		id[nt++] = INT;
+
+		strcpy(tag[nt], "SnapshotFilesType");
+		addr[nt] = &Sin_ftype;
 		id[nt++] = INT;
 
 		strcpy(tag[nt], "x_c");
@@ -288,8 +304,10 @@ void Read_parameter_file(char *ParameterFile){
 	MPI_Bcast(&Hic_dir,sizeof(Hic_dir)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
 	MPI_Bcast(&Hic_name,sizeof(Hic_name)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
 	MPI_Bcast(&Hin_fnr,1,MPI_INT,0,MPI_COMM_WORLD);
+	MPI_Bcast(&Hin_ftype,1,MPI_INT,0,MPI_COMM_WORLD);
 	MPI_Bcast(&output_dir,sizeof(output_dir)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
 	MPI_Bcast(&out_fnr,1,MPI_INT,0,MPI_COMM_WORLD);
+	MPI_Bcast(&out_ftype,1,MPI_INT,0,MPI_COMM_WORLD);
 	MPI_Bcast(&cubes_per_side,1,MPI_INT,0,MPI_COMM_WORLD);
 	MPI_Bcast(&levels_number,1,MPI_INT,0,MPI_COMM_WORLD);
 	MPI_Bcast(&species_number,1,MPI_INT,0,MPI_COMM_WORLD);
@@ -299,9 +317,11 @@ void Read_parameter_file(char *ParameterFile){
 	MPI_Bcast(&Lic_dir,sizeof(Lic_dir)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
 	MPI_Bcast(&Lic_name,sizeof(Lic_name)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
 	MPI_Bcast(&Lin_fnr,1,MPI_INT,0,MPI_COMM_WORLD);
+	MPI_Bcast(&Lin_ftype,1,MPI_INT,0,MPI_COMM_WORLD);
 	MPI_Bcast(&snap_dir,sizeof(snap_dir)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
 	MPI_Bcast(&snap_name,sizeof(snap_name)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
 	MPI_Bcast(&Sin_fnr,1,MPI_INT,0,MPI_COMM_WORLD);
+	MPI_Bcast(&Sin_ftype,1,MPI_INT,0,MPI_COMM_WORLD);
 	MPI_Bcast(&c,3,MPI_FLOAT,0,MPI_COMM_WORLD);
 	MPI_Bcast(&cascade_random_seed, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(&max_cascade_iter, 1, MPI_INT, 0, MPI_COMM_WORLD);

@@ -1,0 +1,22 @@
+// ================================================================================================= //
+//                                                ZInCo                                              //
+// ================================================================================================= //
+
+  This is a DILUTION  
+
+Reading the header to get BoxSize and compute mtot, ntot, ltot...
+Time elapsed: 0.000993
+
+Calling Slicer...
+creating the resolution matrix
+Time elapsed: 0.008923
+
+Calling New_particles_maker...
+New_particles_maker: processing ICs file ../ICs/TestICs_Np128_Nf1
+Time elapsed: 1.203068
+
+Calling New_files_writer...
+New_files_writer: reading the first ICs file (../ICs/TestICs_Np128_Nf1) to get the header variables
+New_files_writer: writing on file ../output/TestICs_Np128_Nf1.dilution32
+Time elapsed: 1.223350
+
