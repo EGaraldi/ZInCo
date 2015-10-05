@@ -19,9 +19,6 @@
 #produce a file whit the correspondence between old and new IDs
 #OPT += -DPRINT_IDS_CORRESPONDENCE
 
-#add a fictional block of internal energies
-OPT += -DADD_INTERNAL_ENERGIES
-
 CXX = mpic++
 
 OPTIMIZE = -Wall -Wextra -g -O3

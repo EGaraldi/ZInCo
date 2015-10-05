@@ -55,7 +55,7 @@ void New_regions_finder(){
 			print_info("New_regions_finder: processing snapshot file %s\n",fname);fflush(info);
 
 			//actually read the file
-			bool things_to_read[5] = { true, true, true, true, false }; /* header, pos, vel, id, mass */
+			bool things_to_read[6] = { true, true, true, true, false, false }; /* header, pos, vel, id, mass, int.energy */
 			Read_Snap_File(fname, Sin_ftype, header1, particles_in, idL, false, things_to_read);
 			N = Ngas + Nhalo + Ndisk + Nbulge + Nstars + Nbndry; //total number of particles
 
@@ -102,7 +102,7 @@ void New_regions_finder(){
 			print_info("New_regions_finder: processing ICs file %s\n",fname); fflush(info);
 			
 			//actually read file
-			bool things_to_read[5] = { true, true, true, true, false }; /* header, pos, vel, id, mass */
+			bool things_to_read[6] = { true, true, true, true, false, false }; /* header, pos, vel, id, mass, int.energy */
 			Read_Snap_File(fname, Lin_ftype, header1, particles_in, idL, false, things_to_read);
 			N = Ngas + Nhalo + Ndisk + Nbulge + Nstars + Nbndry;
 

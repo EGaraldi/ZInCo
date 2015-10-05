@@ -128,8 +128,6 @@ Following the description of the available compilation options is provided
 -DPRINT_IDS_CORRESPONDENCE           |  Produce a file with the corrspondence between the IDs in the old (high-resolution) ICs
                                      |  and the new (processed) ICs
 -------------------------------------------------------------------------------------------------------------------------------
--DADD_INTERNAL_ENERGIES              |  Add a block containing (fictional=null) internal energies.
--------------------------------------------------------------------------------------------------------------------------------
 -DZOOM_FROM_ICS                      |  In the zoom run, the resolution regions are taken directly from the high-res ICs without adjust them.
 ================================================================================================================================
 

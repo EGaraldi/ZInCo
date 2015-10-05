@@ -42,7 +42,7 @@ void New_files_writer(){
 	print_info("New_files_writer: reading the first ICs file (%s) to get the header variables\n",fname);
 
 	//read the existing header and then modify the variables changed by ZInCo
-	bool things_to_read[5] = { true, false, false, false, false }; /* header, pos, vel, id, mass */
+	bool things_to_read[6] = { true, false, false, false, false, false }; /* header, pos, vel, id, mass, int.energy */
 	Read_ICs_File(fname, Hin_ftype, wh, particles_in, idH, false, things_to_read);
 
 	#ifdef DEBUG
@@ -224,7 +224,7 @@ void New_files_writer(){
 
 			//Call the function to actually write data
 			print_info("New_files_writer: writing on file %s\n",fname);
-			bool things_to_write[5] = { true, true, true, true, true }; /* header, pos, vel, id, mass */
+			bool things_to_write[6] = { true, true, true, true, true, true }; /* header, pos, vel, id, mass, int.energy */
 			Write_ICs_or_Snap_File(fname, out_ftype, wh, new_particles, things_to_write);
 
 			//Remove the particles written

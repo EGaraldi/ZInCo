@@ -69,7 +69,7 @@ int main(int argc, char** argv){
 
 	build_file_name(Hic_dir, Hic_name, Hin_fnr, 0, fname);
 
-	bool things_to_read[5] = { true, false, false, false, false };
+	bool things_to_read[6] = { true, false, false, false, false, false };
 	Read_ICs_File(fname, Hin_ftype, header1, particles_in, idH, false, things_to_read);
 
 	BoxSize=(float)header1.BoxSize;

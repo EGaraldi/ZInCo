@@ -88,7 +88,7 @@ void New_particles_maker(){
 		#endif
 
 		//read "old" particles
-		bool things_to_read[5] = { true, true, true, true, true }; /* header, pos, vel, id, mass */
+		bool things_to_read[6] = { true, true, true, true, true, true }; /* header, pos, vel, id, mass, int.energy */
 		Read_ICs_File(fname, Hin_ftype, header1, particles_in, idH, true, things_to_read);
 		#ifdef DEBUG
 		printf("Ngas %i Nhalo %i Hdisk %i Nbulge %i Nstars %i Nbndry %i\n",Ngas, Nhalo, Ndisk, Nbulge, Nstars, Nbndry);
@@ -148,7 +148,8 @@ void New_particles_maker(){
 				CMs[first_index][second_index].pos[2] += particles_in[k].pos[2]*particles_in[k].mass;
 				CMs[first_index][second_index].vel[0] += particles_in[k].vel[0]*particles_in[k].mass;
 				CMs[first_index][second_index].vel[1] += particles_in[k].vel[1]*particles_in[k].mass;
-				CMs[first_index][second_index].vel[2] += particles_in[k].vel[2]*particles_in[k].mass;
+				CMs[first_index][second_index].vel[2] += particles_in[k].vel[2] * particles_in[k].mass;
+				CMs[first_index][second_index].internal_energy += particles_in[k].internal_energy * particles_in[k].mass;
 				#ifdef PRINT_IDS_CORRESPONDENCE
 				IDs[first_index][second_index].push_back(idH[k]);
 				#endif
@@ -187,7 +188,7 @@ void New_particles_maker(){
 				#endif
 				new_particles[i].push_back(particle_data(CMs[i][j].pos[0]/CMs[i][j].mass, CMs[i][j].pos[1]/CMs[i][j].mass, CMs[i][j].pos[2]/CMs[i][j].mass,
 								CMs[i][j].vel[0]/CMs[i][j].mass, CMs[i][j].vel[1]/CMs[i][j].mass, CMs[i][j].vel[2]/CMs[i][j].mass,
-								CMs[i][j].mass));
+								CMs[i][j].mass, CMs[i][j].internal_energy/CMs[i][j].mass));
 				#ifdef PRINT_IDS_CORRESPONDENCE
 				old_ids[i].push_back(IDs[i][j]);
 				#endif

@@ -35,6 +35,7 @@ int out_ftype;
 //geometric variables
 int cubes_per_side;
 float c[3];
+const float PI = 3.14159265f;
 
 //struct used to read the header
 struct io_header header1;
