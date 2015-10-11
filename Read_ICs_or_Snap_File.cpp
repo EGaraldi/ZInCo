@@ -285,6 +285,7 @@ void Read_ICs_File(char fname[], int ftype, io_header& header, vector<particle_d
 		printf("proc %i   debug RIoSF.7\n", my_rank);
         #endif
 
+        #ifdef BARYONS
 		if (ftype == 2)
 			if (!ReadBlockLabel(file)){
 				printf("fatal error: blockheaders not equal! Stopped at: <internal energies> label.\n");
@@ -294,7 +295,7 @@ void Read_ICs_File(char fname[], int ftype, io_header& header, vector<particle_d
 		my_fread(&blockheader1, sizeof(int), 1, file);
 
 		if (things_to_read[5])
-			for (k = 0; k<N; k++) {my_fread(&particles[k].internal_energy, sizeof(float), 1, file); }
+			for (k = 0; k<header.npart[0]; k++) {my_fread(&particles[k].internal_energy, sizeof(float), 1, file); }
 		else{
 			float trash;
 			my_fread(&trash, sizeof(float), N, file);
@@ -304,7 +305,7 @@ void Read_ICs_File(char fname[], int ftype, io_header& header, vector<particle_d
 			display_info("fatal error: blockheaders not equal! Stopped at: <internal energies> block.\n");
 			error_flag = 4;
 		}
-
+        #endif
 		error_flag_check();
 
 		#ifdef VDEBUG

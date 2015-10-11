@@ -19,6 +19,11 @@
 #produce a file whit the correspondence between old and new IDs
 #OPT += -DPRINT_IDS_CORRESPONDENCE
 
+#activate baryons processing (reading and writing internal energies).
+## NOTE: baryons must be stored in type0 particles in ICs
+#OPT += -DBARYONS
+
+
 CXX = mpic++
 
 OPTIMIZE = -Wall -Wextra -g -O3

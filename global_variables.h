@@ -129,7 +129,7 @@ struct particle_data{
 		vel[1]=0.0f;
 		vel[2]=0.0f;
 		mass = 0.0f;
-		internal_energy = 0.0f;
+		internal_energy = -1.0f; //default to -1 in order to recognize when read
 	}
 
 	particle_data(float p0, float p1, float p2, float v0, float v1, float v2, float m, float ie){

@@ -148,7 +148,7 @@ void New_particles_maker(){
 				CMs[first_index][second_index].pos[2] += particles_in[k].pos[2]*particles_in[k].mass;
 				CMs[first_index][second_index].vel[0] += particles_in[k].vel[0]*particles_in[k].mass;
 				CMs[first_index][second_index].vel[1] += particles_in[k].vel[1]*particles_in[k].mass;
-				CMs[first_index][second_index].vel[2] += particles_in[k].vel[2] * particles_in[k].mass;
+				CMs[first_index][second_index].vel[2] += particles_in[k].vel[2]*particles_in[k].mass;
 				CMs[first_index][second_index].internal_energy += particles_in[k].internal_energy * particles_in[k].mass;
 				#ifdef PRINT_IDS_CORRESPONDENCE
 				IDs[first_index][second_index].push_back(idH[k]);
