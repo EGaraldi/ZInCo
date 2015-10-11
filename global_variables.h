@@ -84,6 +84,7 @@ extern int out_ftype;
 //geometric variables
 extern int cubes_per_side;
 extern float c[3];	//coordinates of the center of the halo
+extern const float PI;
 
 //struct used to read the header
 struct io_header{
@@ -118,16 +119,7 @@ struct particle_data{
 	float pos[3];
 	float vel[3];
 	float mass;
-	/*
-
-	You can easily estend to baryon particles adding their properties in the following and
-	updating consequentely the functions to read and write the files and the one to merge
-	together the particles of a given domain.
-
 	float internal_energy;
-	float density;
-	float smoothing;
-	*/
 
 	particle_data(){
 		pos[0]=0.0f;
@@ -137,13 +129,10 @@ struct particle_data{
 		vel[1]=0.0f;
 		vel[2]=0.0f;
 		mass = 0.0f;
-	/*	internal_energy = 0.0f;
-		density = 0.0f;
-		smoothing = 0.0f;
-	*/
+		internal_energy = -1.0f; //default to -1 in order to recognize when read
 	}
 
-	particle_data(float p0, float p1, float p2, float v0, float v1, float v2, float m){
+	particle_data(float p0, float p1, float p2, float v0, float v1, float v2, float m, float ie){
 		pos[0]=p0;
 		pos[1]=p1;
 		pos[2]=p2;
@@ -151,11 +140,7 @@ struct particle_data{
 		vel[1]=v1;
 		vel[2]=v2;
 		mass = m;
-		/*
-		internal_energy = 0.0f;
-		density = 0.0f;
-		smoothing = 0.0f;
-		*/
+		internal_energy = ie;
 	}
 
 };

@@ -230,8 +230,10 @@ RunType                    &  string      & Y & Y & Y &  String which contains t
 HighResICsDir              &  string      & Y & Y & Y &  Directory in which the high-resolution ICs are stored \\
 HighResICsName             &  string      & Y & Y & Y &  Name of the file(s) containing the ICs \\
 HighResICsFilesNumber      &  int         & Y & Y & Y &  Number of files containing the ICs \\
+HighResICsFilesType        &  int         & Y & Y & Y &  Files type (1 or 2) \\
 OutputDir                  &  string      & Y & Y & Y &  Directory in which the output are stored \\
 OutputFilesNumber          &  int         & Y & Y & Y &  Number of files in the output ICs \\
+OutputFilesType            &  int         & Y & Y & Y &  Files type (1 or 2) \\
 CubesPerSide               &  int         & Y & Y & Y &  Number of cubic cells per side in which the simulations box is divided \\
 LevelsNumber               &  int         & Y & Y & Y &  Number of resolution levels to produce \\
 SpeciesNumber              &  int         & Y & Y & Y &  Number of species in the ICs. They must be stored in the high-resolution ICs provided as the first SpeciesNumber particles, i.e. from index 0 to index $SpeciesNumber-1$  N.B.: please note that the following relation must hold true: $LevelsNumber * $ $SpeciesNumber <= 6$ \\
@@ -256,9 +258,11 @@ Level5CubesPerSide         &  int         & N & Y & Y & only the first LevelsNum
 LowResICsDir               &  string      & N & Y & N &  Directory in which the low-resolution (i.e. zoom snapshot) ICs are stored \\
 LowResICsName              &  string      & N & Y & N &  Name of the file(s) containing the ICs \\
 LowResICsFilesNumber       &  int         & N & Y & N &  Number of files containing the ICs \\
+LowResICsFilesType         &  int         & Y & Y & Y &  Files type (1 or 2) \\
 SnapshotDir                &  string      & N & Y & N &  Directory in which the snapshot is stored \\
 SnapshotName               &  string      & N & Y & N &  Name of the file(s) containing the snapshot \\
 SnapshotFilesNumber        &  int         & N & Y & N &  Number of files containing the snapshot \\
+Snapshot  FilesType        &  int         & Y & Y & Y &  Files type (1 or 2) \\
 x\_c                       &  float       & N & Y & N &  Coordinates of the center of the resolution regions \\
 y\_c                       &  float       & N & Y & N & \\
 z\_c                       &  float       & N & Y & N & \\
@@ -284,7 +288,7 @@ LONGIDS\_IN\_LOW                   &  Use long IDs in the low-resolution ICs and
 LONGIDS\_OUT                       &  Produce ICs with long IDs \\
 VINFO                              &  Print a huge number of informations in the info.txt file. Be careful, the fill will become BIG! \\
 PRINT\_IDS\_CORRESPONDENCE         &  Produce a file with the corrspondence between the IDs in the old (high-resolution) ICs and the new (processed) ICs \\
-ADD\_INTERNAL\_ENERGIES            &  Add a block containing (fictional=null) internal energies. \\
+BARYONS                            &  Activate baryon treatment (i.e. reading and writing internal energies). Baryons \emph{must} be stored in type 0 in the original ICs. \\
 \hline
 \end{longtable}
 

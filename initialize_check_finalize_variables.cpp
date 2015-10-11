@@ -44,28 +44,16 @@ void initialize(int argc){
 	error_flag_check();
 
 	//create a MPI_type for struct particle_data 
-	{const int nitems=3;
-	int blocklengths[3] = {3,3,1};
-	MPI_Datatype types[3] = {MPI_FLOAT, MPI_FLOAT, MPI_FLOAT};
-	MPI_Aint offsets[3] = {
-				(MPI_Aint)offsetof(particle_data, pos), 
-				(MPI_Aint)offsetof(particle_data, vel), 
-				(MPI_Aint)offsetof(particle_data, mass)
-				};
-	/*
-	//the following is ~ ready for adding the SPH variables
-	{const int nitems=6;
-	int blocklengths[6] = {3,3,1,1,1,1};
-	MPI_Datatype types[6] = { MPI_FLOAT, MPI_FLOAT, MPI_FLOAT, MPI_FLOAT, MPI_FLOAT, MPI_FLOAT };
-	MPI_Aint offsets[6] = {
+	{const int nitems=4;
+	int blocklengths[4] = {3,3,1,1};
+	MPI_Datatype types[4] = {MPI_FLOAT, MPI_FLOAT, MPI_FLOAT, MPI_FLOAT};
+	MPI_Aint offsets[4] = {
 				(MPI_Aint)offsetof(particle_data, pos), 
 				(MPI_Aint)offsetof(particle_data, vel), 
 				(MPI_Aint)offsetof(particle_data, mass),
-				(MPI_Aint)offsetof(particle_data, internal_energy),
-				(MPI_Aint)offsetof(particle_data, density),
-				(MPI_Aint)offsetof(particle_data, smoothing)
+				(MPI_Aint)offsetof(particle_data, internal_energy)
 				};
-	*/
+
 	MPI_Type_create_struct(nitems, blocklengths, offsets, types, &MPI_PARTICLE_t);
 	MPI_Type_commit(&MPI_PARTICLE_t);
 	}

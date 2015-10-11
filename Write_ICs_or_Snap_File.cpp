@@ -121,17 +121,22 @@ void Write_ICs_or_Snap_File(char fname[], int ftype, io_header& header, vector< 
 		my_fwrite(&dim, sizeof(int), 1, file);
 	}
 
-	//fake internal energies
-	#ifdef ADD_INTERNAL_ENERGIES
-	if(header.npart[0] > 0){
-		float ie=0.0f;
-		dim = header.npart[0]*sizeof(float);
+    #ifdef BARYONS
+	//internal energies
+	int Nbaryons = 0;
+	//loop over baryons species out
+	for (int l = 0; l < levels_number; l++) Nbaryons += header.npart[6-species_number*(l+1)];
+	if(Nbaryons > 0){
+		dim = Nbaryons*sizeof(float);
 		if (ftype == 2) WriteBlockLabel(file, "U   ", dim + 2*sizeof(int));
         my_fwrite(&dim, sizeof(int), 1, file);
-        for(j=0;j<header.npart[0];j++) my_fwrite(&ie, sizeof(float), 1, file);
+		for (int l = levels_number; l >= 0; l--){
+			int idx = 6 - species_number*(l + 1);
+			for (j = 1; j <= header.npart[idx]; j++) my_fwrite(&particles[i][particles[i].size() - j].internal_energy, sizeof(float), 1, file);
+		}
         my_fwrite(&dim, sizeof(int), 1, file);
 	}
-	#endif
+    #endif
 
 	fclose(file);
 
