@@ -26,6 +26,8 @@
 
 CXX = mpic++
 
+OMPFLAG = -fopenmp
+
 OPTIMIZE = -Wall -Wextra -g -O3
 
 EXEC = ZInCo
@@ -37,7 +39,7 @@ OBJS = main.o  create_zoom_dilution_cascade.o  initialize_check_finalize_variabl
 
 INCL = function_declaration.h  global_variables.h  Makefile
 
-CXXFLAGS = $(OPTIMIZE) $(OPT)
+CXXFLAGS = $(OMPFLAG) $(OPTIMIZE) $(OPT)
 
 LIBS = -lm
 

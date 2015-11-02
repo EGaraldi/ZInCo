@@ -292,39 +292,7 @@ void Read_parameter_file(char *ParameterFile){
 		}
 	}
 
-	MPI_Bcast(&errorFlag, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
 	if(errorFlag) my_exit(9);
-
-/*	MPI_Bcast(&dilution,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&zoom,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&cascade,1,MPI_INT,0,MPI_COMM_WORLD);
-*/
-	MPI_Bcast(&run_type,sizeof(run_type)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Hic_dir,sizeof(Hic_dir)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Hic_name,sizeof(Hic_name)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Hin_fnr,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Hin_ftype,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&output_dir,sizeof(output_dir)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
-	MPI_Bcast(&out_fnr,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&out_ftype,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&cubes_per_side,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&levels_number,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&species_number,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&level_size,6,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&level_bubbles_radii,6,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&level_cubic_region_side,6,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Lic_dir,sizeof(Lic_dir)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Lic_name,sizeof(Lic_name)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Lin_fnr,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Lin_ftype,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&snap_dir,sizeof(snap_dir)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
-	MPI_Bcast(&snap_name,sizeof(snap_name)/sizeof(char),MPI_CHAR,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Sin_fnr,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&Sin_ftype,1,MPI_INT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&c,3,MPI_FLOAT,0,MPI_COMM_WORLD);
-	MPI_Bcast(&cascade_random_seed, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&max_cascade_iter, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	
 	#undef REAL
 	#undef STRING

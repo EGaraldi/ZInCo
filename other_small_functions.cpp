@@ -15,6 +15,7 @@ Bonn, Germany)
 
 =============================================================*/
 
+#include<cstdarg>
 #include"global_variables.h"
 #include"functions_declaration.h"
 
@@ -22,7 +23,6 @@ Bonn, Germany)
 //is performed only by proc0
 void print_info(const char * format, ...){
 	//print info to the info.txt file
-	if(my_rank != 0) return;
 	va_list args;
 	va_start(args, format);
 	vfprintf(info, format, args);
@@ -35,7 +35,6 @@ void print_info(const char * format, ...){
 //is performed only by proc0
 void display_info(const char * format, ...){
 	//display info to screen
-	if(my_rank != 0) return;
 	va_list args;
 	va_start(args, format);
 	vprintf(format, args);
@@ -90,22 +89,14 @@ size_t my_fwrite(void *ptr, size_t size, size_t nmemb, FILE * stream){
 }
 
 
-//my_exit finalize MPI and exit with the given code
 void my_exit(int code){
-	MPI_Finalize();
 	exit(code);
 }
 
 
-//BCast the error flag between the procs and check everything is fine
+//check everything is fine
 void error_flag_check(){
-	//check if any proc encounter an error and stop the code consequentely
-	int i, bcast_flag = 0;
-	for(i=0; i<world_size; i++){
-		if(my_rank == i) bcast_flag = error_flag;
-		MPI_Bcast(&bcast_flag, 1, MPI_INT, i, MPI_COMM_WORLD);
-		if(bcast_flag != 0) my_exit(bcast_flag);
-	}
+	if(error_flag != 0) my_exit(error_flag);
 }
 
 

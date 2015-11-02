@@ -17,28 +17,22 @@ Bonn, Germany)
 
  #ifndef LONGIDS_IN_HIGH
   #define LOIinHigh int
-  #define MPI_LOIinHigh MPI_INT
  #else
   #define LOIinHigh long
-  #define MPI_LOIinHigh MPI_LONG
  #endif
 
 
  #ifndef LONGIDS_IN_LOW
   #define LOIinLow int
-  #define MPI_LOIinLow MPI_INT
  #else
   #define LOIinLow long
-  #define MPI_LOIinLow MPI_LONG
  #endif
 
 
  #ifndef LONGIDS_OUT
   #define LOIout int
-  #define MPI_LOIout MPI_INT
  #else
   #define LOIout long
-  #define MPI_LOIout MPI_LONG
  #endif
 
 #endif
@@ -57,9 +51,6 @@ using namespace std;
 
 //#include<sys/time.h>
 #include<ctime>
-
-
-#include<mpi.h>
 
 
 
@@ -110,9 +101,7 @@ struct io_header{
 	io_header(){}
 
 };
-
 extern io_header header1;
-extern MPI_Datatype MPI_HEADER_t;
 
 //struct that will contains the data of a single particle
 struct particle_data{
@@ -144,8 +133,6 @@ struct particle_data{
 	}
 
 };
-
-extern MPI_Datatype MPI_PARTICLE_t;
 
 
 //struct to desibe a Sphere
@@ -187,8 +174,6 @@ struct Sphere{
 	float radius;
 };
 
-extern MPI_Datatype MPI_SPHERE_t;
-
 
 //struct to store resolution info
 struct resolution_info{
@@ -226,7 +211,6 @@ extern float shift[3];		//displacement to put c at the center of the Box
 
 // MPI variables
 extern int world_size, my_rank;
-extern int mpi_tag;
 
 
 //resolution structure variables

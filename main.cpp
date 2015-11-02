@@ -12,6 +12,7 @@ Bonn, Germany)
 
 =============================================================*/
 
+#include<omp.h>
 #include"global_variables.h"
 #include"functions_declaration.h"
 
@@ -38,12 +39,10 @@ int main(int argc, char** argv){
 	#endif
 
 	//open the file where printing information
-	if(my_rank == 0){
-		char filename_info[200];
-		sprintf(filename_info,"%s/info.txt",output_dir);
-		info=fopen(filename_info,"w");
-		if (info == NULL){ display_info("ERROR while opening file %s\n", filename_info); error_flag=2; }
-	}
+	char filename_info[200];
+	sprintf(filename_info,"%s/info.txt",output_dir);
+	info=fopen(filename_info,"w");
+	if (info == NULL){ display_info("ERROR while opening file %s\n", filename_info); error_flag=2; }
 	error_flag_check();	
 
 	//print header
@@ -59,10 +58,6 @@ int main(int argc, char** argv){
 	printf("proc %i   debug 2\n",my_rank);
 	#endif
 
-	#if defined(VDEBUG) || defined(DEBUG)
-	MPI_Barrier(MPI_COMM_WORLD);
-	#endif
-
 	//get info from ICs header
 	print_info("Reading the header to get BoxSize and compute mtot, ntot, ltot...\n");
 	display_info("Reading the header to get BoxSize and compute mtot, ntot, ltot...\n");
@@ -70,7 +65,7 @@ int main(int argc, char** argv){
 	build_file_name(Hic_dir, Hic_name, Hin_fnr, 0, fname);
 
 	bool things_to_read[6] = { true, false, false, false, false, false };
-	Read_ICs_File(fname, Hin_ftype, header1, particles_in, idH, false, things_to_read);
+	Read_ICs_File(fname, Hin_ftype, header1, particles_in, idH, things_to_read);
 
 	BoxSize=(float)header1.BoxSize;
 
@@ -78,15 +73,8 @@ int main(int argc, char** argv){
 	printf("proc %i   debug 3\n",my_rank);
 	#endif
 
-	//send BoxSize to all the procs
-	MPI_Bcast(&BoxSize,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
-
 	//print a warning for ignored particles (i.e. particles outside *all* the resolution regions specified)
 	check_ignored_particles();
-
-	#if defined(VDEBUG) || defined(DEBUG)
-	MPI_Barrier(MPI_COMM_WORLD);
-	#endif
 
 	//initialize the desired run
 	if(dilution) create_dilution();
@@ -120,7 +108,7 @@ int main(int argc, char** argv){
 	printf("(process %i) BoxSize:%f  cubes_per_side:%i  lambda:%f\n",my_rank,BoxSize,cubes_per_side,lambda);
 	#endif
 
-	print_info("Time elapsed: %f\n\n",MPI_Wtime()-init_time);
+	print_info("Time elapsed: %f\n\n", omp_get_wtime() - init_time);
 
 	//if we are zooming, we have to adjust the resolution regions in the ICs. This is done by tracking the particles from the region defined 
 	//in the snapshot to the corresponding one in the corresponding ICs
@@ -130,7 +118,7 @@ int main(int argc, char** argv){
 		display_info("Calling New_regions_finder...\n");
 
 		New_regions_finder();
-		print_info("Time elapsed: %f\n\n",MPI_Wtime()-init_time);
+		print_info("Time elapsed: %f\n\n", omp_get_wtime() - init_time);
 		
 		#ifdef VDEBUG
 		printf("proc %i   debug 4\n",my_rank);
@@ -142,15 +130,11 @@ int main(int argc, char** argv){
 	printf("(process %i) r_high_IC:%f  r_medium_IC:%f  c_IC:%f  %f  %f\n",my_rank,r_high_IC,r_medium_IC,c_IC[0],c_IC[1],c_IC[2]);
 	#endif
 
-	#if defined(VDEBUG) || defined(DEBUG)
-	MPI_Barrier(MPI_COMM_WORLD);
-	#endif
-
 	//Now we slice the box and assign each cell to the corresponding resolution region
 	print_info("Calling Slicer...\n");
 	display_info("Calling Slicer...\n");
 	Slicer();
-	print_info("Time elapsed: %f\n\n",MPI_Wtime()-init_time);
+	print_info("Time elapsed: %f\n\n", omp_get_wtime() - init_time);
 
 	#ifdef DEBUG
 	//print out the resolution matrix
@@ -176,31 +160,21 @@ int main(int argc, char** argv){
 	printf("proc %i   debug 5\n",my_rank);
 	#endif
 
-	#if defined(VDEBUG) || defined(DEBUG)
-	MPI_Barrier(MPI_COMM_WORLD);
-	#endif
-
 	//process the cells and produce the particles for the ICs
 	print_info("Calling New_particles_maker...\n");
 	display_info("Calling New_particles_maker...\n");
 	New_particles_maker();
-	print_info("Time elapsed: %f\n\n",MPI_Wtime()-init_time);
+	print_info("Time elapsed: %f\n\n", omp_get_wtime() - init_time);
 
 	#ifdef VDEBUG
 	printf("proc %i   debug 6\n",my_rank);
-	#endif
-
-	#if defined(VDEBUG) || defined(DEBUG)
-	MPI_Barrier(MPI_COMM_WORLD);
 	#endif
 
 	//write the new ICs file(s)
 	print_info("Calling New_files_writer...\n");
 	display_info("Calling New_files_writer...\n");
 	New_files_writer();
-	print_info("Time elapsed: %f\n\n",MPI_Wtime()-init_time);
-
-	MPI_Barrier(MPI_COMM_WORLD);
+	print_info("Time elapsed: %f\n\n", omp_get_wtime() - init_time);
 	
 	display_info("Done!\n");
 

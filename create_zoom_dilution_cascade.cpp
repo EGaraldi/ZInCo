@@ -152,19 +152,6 @@ void create_cascade(){
 		}
 		fclose(cascade_info);
 	}
-
-	//Now we send computed data to other processes
-	//we also broadcast the size to handle errors in the bubbles production which could produce less bubbles than desired
-	int prev_size = 1; //size of the previous level
-	int this_size; //size of this level
-	if (my_rank == 0) this_size = resolution_bubbles[0].size();
-	for(int i=0; i<levels_number; i++){
-		MPI_Bcast(&this_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		if (my_rank != 0) resolution_bubbles[i].resize(prev_size*this_size);
-		for(int k=0; k<prev_size*this_size; k++)
-			MPI_Bcast(&resolution_bubbles[i][k], 1, MPI_SPHERE_t, 0, MPI_COMM_WORLD);
-		prev_size = this_size;
-	}
 }
 
 //ZOOM: here after the function to initialize a zoom run

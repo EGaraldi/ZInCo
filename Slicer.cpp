@@ -22,8 +22,6 @@ void Slicer(){
 	printf("proc %i   debug 4.1\n",my_rank);
 	#endif
 
-	int i,j,k,m,n,l,m1=0,n1=0,l1=0; //loop variables
-
 	#ifdef DEBUG
 	printf("trying to allocate: %i x %i x %i LOIout values\n",mtot, ntot, ltot);
 	#endif
@@ -33,9 +31,9 @@ void Slicer(){
 	// -level is the resolution level it belongs to
 	// -cubeID is an unique
 	resolution_matrix=new resolution_info**[mtot];
-	for(m=0;m<mtot;m++){
+	for(int m=0;m<mtot;m++){
 		resolution_matrix[m]=new resolution_info*[ntot];
-		for(n=0;n<ntot;n++) resolution_matrix[m][n]=new resolution_info[ltot];
+		for(int n=0;n<ntot;n++) resolution_matrix[m][n]=new resolution_info[ltot];
 	}
 
 	#ifdef VDEBUG
@@ -54,14 +52,15 @@ void Slicer(){
 	//This could lead to assign cell completely outside the bubble to the bubble itself, but this is a fair trade to avoid
 	//a significantly higher complexity in checking for intersection between cell and bubble. Moreover, this can not reduce 
 	//the high-res region but only increase it.
-	for(m=0;m<mtot;m++) for(n=0;n<ntot;n++) for(l=0;l<ltot;l++){
+    #pragma omp parallel for collapse(3)
+	for(int m=0;m<mtot;m++) for(int n=0;n<ntot;n++) for(int l=0;l<ltot;l++){
 		//first set level to -1 to identify ignored cells
 		resolution_matrix[m][n][l].level = -1;
 		resolution_matrix[m][n][l].processed = false;
 		//loop over levels
-		for(i=0; i<levels_number; i++){
+		for(int i=0; i<levels_number; i++){
 			//loop over level's bubbles
-			for(j=0; j<level_size[i]; j++){
+			for(int j=0; j<level_size[i]; j++){
 				//computing the distance
 				R=pow(pow(resolution_bubbles[i][j].center[0]-(2*m+1)*0.5*lambda,2) + 
 					pow(resolution_bubbles[i][j].center[1]-(2*n+1)*0.5*lambda,2) + 
@@ -87,15 +86,16 @@ void Slicer(){
 
 	//Now assign an unique ID to each subdomain and count the particles to be (potentially) produced. 
 	//To do so, loop again and try to merge adjacent domains.
-	for (m = 0; m<mtot; m++) for (n = 0; n<ntot; n++) for (l = 0; l<ltot; l++){
+	//{not easily OMP parallelizable since for a given (m,n,l) also neighbors are modified!}
+	for (int m = 0; m<mtot; m++) for (int n = 0; n<ntot; n++) for (int l = 0; l<ltot; l++){
 		if (level_cubic_region_side[resolution_matrix[m][n][l].level] > 0){ //merge particles
 			//here we loop over the number of cubic cells to merge (the -1 is due to the fact that k is the number of
 			//cells merged to the current one). We loop to make sure that if there are not enough adjacent cells to be 
 			//merged, we try again with k reduced by one until we reach k=0 <-> the cell alone is merged.
-			for (k = level_cubic_region_side[resolution_matrix[m][n][l].level] - 1; k >= 0; k--){
+			for (int k = level_cubic_region_side[resolution_matrix[m][n][l].level] - 1; k >= 0; k--){
 				//now we loop on the k adjacent cells in all directions and check if all the adjacent cells share with 
 				//the current one the same level (and have not yet been processed = merged). If not, go to the next cell
-				for (m1 = 0; m1 <= k; m1++) for (n1 = 0; n1 <= k; n1++) for (l1 = 0; l1 <= k; l1++){
+				for (int m1 = 0; m1 <= k; m1++) for (int n1 = 0; n1 <= k; n1++) for (int l1 = 0; l1 <= k; l1++){
 					if ((m + m1 >= mtot) and(n + n1 >= ntot) and(l + l1 >= ltot)) goto check_failed; //check NOT out of bound
 					if (resolution_matrix[m + m1][n + n1][l + l1].processed) goto check_failed; //check the neighbors are not yet processed
 				}
@@ -105,7 +105,7 @@ void Slicer(){
 				#endif
 
 				//set cubeID and mark the cubes as already processed
-				for (m1 = 0; m1 <= k; m1++) for (n1 = 0; n1 <= k; n1++) for (l1 = 0; l1 <= k; l1++){
+				for (int m1 = 0; m1 <= k; m1++) for (int n1 = 0; n1 <= k; n1++) for (int l1 = 0; l1 <= k; l1++){
 					resolution_matrix[m + m1][n + n1][l + l1].cubeID = rcounter;
 					resolution_matrix[m + m1][n + n1][l + l1].processed = true;
 				}

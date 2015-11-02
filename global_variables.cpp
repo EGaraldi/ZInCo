@@ -39,15 +39,12 @@ const float PI = 3.14159265f;
 
 //struct used to read the header
 struct io_header header1;
-MPI_Datatype MPI_HEADER_t;
 
 //struct that will contains the data of a single particle
 struct particle_data;
-MPI_Datatype MPI_PARTICLE_t;
 
 //struct to describe a sphere
 struct Sphere;
-MPI_Datatype MPI_SPHERE_t;
 
 //struct for resolution
 struct resolution_info;
@@ -80,7 +77,6 @@ float shift[3];		//displacement to put c at the center of the Box
 
 // MPI variables
 int world_size, my_rank;
-int mpi_tag;
 
 
 //resolution structure variables
